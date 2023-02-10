@@ -138,11 +138,15 @@
 <!--Notification-->
 <script type="text/javascript">
     $(document).ready(function () {
-        
         //Show and hide field technician office handles
-        $('#role-field select[name="role"]').change(function () {
-            $('#handle-field').toggle(500);
-            $('#handles').val('').change();
+        $('#role').on('change', function() {
+            if ( this.value == 'Technician')
+            {
+                $("#handle-field").show(500);
+            } else {
+                $("#handle-field").hide(500);
+                $('#handles').val('').change();
+            }
         });
     })
 
