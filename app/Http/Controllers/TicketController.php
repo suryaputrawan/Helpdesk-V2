@@ -19,6 +19,7 @@ use App\Http\Requests\TicketProgressRequest;
 use App\Models\Item;
 use App\Models\ItemTicket;
 use App\Models\Location;
+use App\Models\TechnicianOfficeHandle;
 use DateTime;
 
 class TicketController extends Controller
@@ -35,6 +36,7 @@ class TicketController extends Controller
         $roleManagement = auth()->user()->role == "Management";
         $roleTechnician = auth()->user()->role == "Technician";
         $deptTechnician = auth()->user()->department_id;
+        $officeHandles = TechnicianOfficeHandle::where('user_id', auth()->user()->id)->pluck('office_id');
 
         if ($roleUser) {
             if (request()->type == 'datatable') {
@@ -91,13 +93,19 @@ class TicketController extends Controller
             return view('ticket.user.index');
         } elseif ($roleTechnician) {
             $tNew = Ticket::where('department_id', $deptTechnician)
-                ->where('assign', '=', 0)->get()->count();
+                ->where('assign', '=', 0)
+                ->whereIn('office_id', $officeHandles)
+                ->get()->count();
             $tProgress = Ticket::where('technician_id', $user)
                 ->where('status_id', '=', 2)
-                ->where('assign', '=', 1)->get()->count();
+                ->where('assign', '=', 1)
+                ->whereIn('office_id', $officeHandles)
+                ->get()->count();
             $tHold = Ticket::where('technician_id', $user)
                 ->where('status_id', '=', 3)
-                ->where('assign', '=', 1)->get()->count();
+                ->where('assign', '=', 1)
+                ->whereIn('office_id', $officeHandles)
+                ->get()->count();
             $tSolved = Ticket::where('technician_id', $user)
                 ->where('assign', '=', 1)
                 ->where('solved_date', '!=', null)
@@ -105,11 +113,13 @@ class TicketController extends Controller
                     $query->where('status_id', '=', 4)
                         ->where('status_id', '=', 5);
                 })
+                ->whereIn('office_id', $officeHandles)
                 ->get()->count();
 
             if (request()->type == 'datatable') {
                 $data = Ticket::where('department_id', $deptTechnician)
-                    ->where('assign', '=', 0)->get();
+                    ->where('assign', '=', 0)
+                    ->whereIn('office_id', $officeHandles)->get();
 
                 return datatables()->of($data)
                     ->addColumn('action', function ($data) {
@@ -308,15 +318,16 @@ class TicketController extends Controller
 
             //Create data to table tickets
             Ticket::create([
-                'nomor' => $autoNo,
-                'date' => $date,
-                'title' => $request->title,
-                'category_id' => $request->category_id,
-                'department_id' => $department->department_id,
-                'location_id' => $request->location_id,
-                'status_id' => 1,
-                'detail_trouble' => $request->detail_trouble,
-                'requester_id' => $requester,
+                'nomor'             => $autoNo,
+                'date'              => $date,
+                'title'             => $request->title,
+                'category_id'       => $request->category_id,
+                'department_id'     => $department->department_id,
+                'location_id'       => $request->location_id,
+                'office_id'         => auth()->user()->office_id,
+                'status_id'         => 1,
+                'detail_trouble'    => $request->detail_trouble,
+                'requester_id'      => $requester,
             ]);
             //End Create ticket
 

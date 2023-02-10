@@ -198,7 +198,7 @@
             },
             processing: true,
             serverSide : true,
-            scrollX: true,
+            scroller: true,
             responsive: false,
             columns: [
                 { data: "nomor", name: "nomor", orderable: true  },

@@ -11,7 +11,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'nomor', 'date', 'title', 'category_id', 'department_id',
-        'location_id', 'status_id', 'detail_trouble',
+        'location_id', 'office_id', 'status_id', 'detail_trouble',
         'requester_id', 'technician_id', 'assign', 'assign_date',
         'solved_date'
     ];
