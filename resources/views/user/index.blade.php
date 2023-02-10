@@ -19,8 +19,10 @@
                         <th>Name</th>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Office</th>
                         <th>Role</th>
                         <th>Status</th>
+                        <th>Office Handles</th>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -54,8 +56,10 @@
                 { data: "name", name: "name", orderable: true  },
                 { data: "username", name: "username", orderable: true  },
                 { data: "email", name: "email", orderable: true  },
+                { data: "office", name: "office", orderable: true  },
                 { data: "role", name: "role", orderable: true  },
                 { data: "aktif", name: "aktif", orderable: true  },
+                { data: "handle", name: "handle", orderable: true  },
                 { data: "action", name: "action", orderable: false, searchable: false, className: "text-center", },
             ],
             drawCallback: function( settings ) {

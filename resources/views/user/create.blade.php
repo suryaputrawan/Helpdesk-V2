@@ -31,6 +31,9 @@
                                     @enderror
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3" >
                                     <label for="username" class="form-label">Username <span style="color: red">*</span></label>
@@ -40,9 +43,7 @@
                                     @enderror
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email <span style="color: red">*</span></label>
@@ -52,12 +53,12 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            {{-- <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Password <span style="color: red">*</span></label>
                                     <input type="password" id="password" class="form-control" name="password" data-parsley-trigger="change" required="" placeholder="Password minimal 6 ">
                                 </div> 
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="row">
@@ -92,17 +93,30 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6" id="role-field">
+                                <label for="role" class="form-label">Role <span style="color: red">*</span></label>
+                                <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" data-toggle="select2">
+                                    <option selected disabled>Please select</option>
+                                    <option value="User" {{ old('role') == "User" ? 'selected' : null }}>User</option>
+                                    <option value="Management" {{ old('role') == "Management" ? 'selected' : null }}>Management</option>
+                                    <option value="Technician" {{ old('role') == "Technician" ? 'selected' : null }}>Technician</option>
+                                    <option value="Admin" {{ old('role') == "Admin" ? 'selected' : null }}>Admin</option>
+                                </select>
+                                @error('role')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-lg-6" id="handle-field" style="display: none">
                                 <div class="mb-3">
-                                    <label for="role" class="form-label">Role <span style="color: red">*</span></label>
-                                    <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" data-toggle="select2">
-                                        <option selected disabled>Please select</option>
-                                        <option value="User" {{ old('role') == "User" ? 'selected' : null }}>User</option>
-                                        <option value="Management" {{ old('role') == "Management" ? 'selected' : null }}>Management</option>
-                                        <option value="Technician" {{ old('role') == "Technician" ? 'selected' : null }}>Technician</option>
-                                        <option value="Admin" {{ old('role') == "Admin" ? 'selected' : null }}>Admin</option>
+                                    <label for="handle" class="form-label">Technician Office Handles <span style="color: red">*</span></label>
+                                    <select name="handle_id[]" id="handles" class="form-control select2-multiple @error('handle_id') is-invalid @enderror" data-toggle="select2"
+                                    multiple="multiple" data-width="100%" data-placeholder="Please select">
+                                        @foreach ($office as $data)
+                                          <option value="{{ $data->id }}" {{ old('handle_id') == $data->id ? 'selected' : null }}>{{ $data->name }}</option>
+                                        @endforeach
                                       </select>
-                                      @error('role')
+                                      @error('handle_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                       @enderror
                                 </div>
@@ -122,7 +136,16 @@
 
 @push('pages-js')
 <!--Notification-->
-<script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        //Show and hide field technician office handles
+        $('#role-field select[name="role"]').change(function () {
+            $('#handle-field').toggle(500);
+            $('#handles').val('').change();
+        });
+    })
+
     @if (session('error')) {
         Swal.fire({
             title: `INFO`,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Office;
 use App\Models\Department;
+use App\Models\TechnicianOfficeHandle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,11 @@ class UserController extends Controller
     public function index()
     {
         if (request()->type == 'datatable') {
-            $data = User::get();
+            $data = User::with([
+                'office' => function ($query) {
+                    $query->select('id', 'name');
+                },
+            ])->get();
 
             return datatables()->of($data)
                 ->addColumn('action', function ($data) {
@@ -38,10 +43,22 @@ class UserController extends Controller
                     </div>';
                     return $group;
                 })
-                ->addColumn('aktif', function ($data) {
-                    return $data->isaktif == "1" ? "Aktif" : "Non Aktif";
+                ->addColumn('office', function ($data) {
+                    return $data->office ? $data->office->name : '';
                 })
-                ->rawColumns(['action', 'aktif'])
+                ->addColumn('aktif', function ($data) {
+                    return $data->isaktif == "1" ? '<span style="color:blue">Aktif</span>' : '<span style="color:red">Non Aktif</span>';
+                })
+                ->addColumn('handle', function ($data) {
+                    $user = TechnicianOfficeHandle::where('user_id', $data->id)->first();
+
+                    if ($user != null) {
+                        return $data->officeHandles()->get()->implode('name', ', ');
+                    } else {
+                        return '';
+                    }
+                })
+                ->rawColumns(['action', 'aktif', 'handle'])
                 ->make(true);
         }
 
@@ -73,7 +90,6 @@ class UserController extends Controller
             'name' => 'required|min:3',
             'username' => 'required|numeric|min:5|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required',
             'office_id' => 'required',
             'department_id' => 'required',
             'role' => 'required',
@@ -82,17 +98,20 @@ class UserController extends Controller
         DB::beginTransaction();
 
         try {
-            User::create([
+            $user = User::create([
                 'name' => $request->name,
                 'username' => $request->username,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($request->username),
                 'office_id' => $request->office_id,
                 'department_id' => $request->department_id,
                 'role' => $request->role,
             ]);
 
             DB::commit();
+
+            //Sync (insert) ke tabel relasi many to many
+            $user->officeHandles()->sync(request('handle_id'));
 
             return redirect()->route('user.index')
                 ->with('success', 'Data was created');
@@ -183,6 +202,9 @@ class UserController extends Controller
                 'role'          => $request->role,
                 'isaktif'       => $request->isaktif,
             ]);
+
+            //Sync (insert) ke tabel relasi many to many
+            $user->officeHandles()->sync(request('handle_id'));
 
             DB::commit();
             return redirect()->route('user.index')

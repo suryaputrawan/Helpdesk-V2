@@ -84,7 +84,7 @@
                                       @enderror
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-6" id="role-field">
                                 <div class="mb-3">
                                     <label for="role" class="form-label">Role <span style="color: red">*</span></label>
                                     <select name="role" id="role" class="form-control @error('role') is-invalid @enderror" data-toggle="select2">
@@ -102,18 +102,63 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-2">
-                                <div class="mb-3">
-                                    <label for="isaktif" class="form-label">Status <span style="color: red">*</span></label>
-                                    <select name="isaktif" id="isaktif" class="form-select @error('isaktif') is-invalid @enderror">
-                                        <option value="1" {{ old('isaktif', $user->isaktif) == 1 ? 'selected' : null }}>Aktif</option>
-                                        <option value="0" {{ old('isaktif', $user->isaktif) == 0 ? 'selected' : null }}>Non-Aktif</option>
-                                      </select>
-                                      @error('isaktif')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                      @enderror
+                            @if ($user->role == 'Technician')
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="handle" class="form-label">Technician Office Handles <span style="color: red">*</span></label>
+                                        <select name="handle_id[]" class="form-control select2-multiple @error('handle_id') is-invalid @enderror" data-toggle="select2"
+                                        multiple="multiple" data-width="100%" data-placeholder="Please select">
+                                            @foreach ($office as $data)
+                                            <option {{ $user->officeHandles()->find($data->id) ? 'selected' : '' }} value="{{ $data->id }}" {{ old('handle_id') == $data->id ? 'selected' : null }}>{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('handle_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="col-lg-2">
+                                    <div class="mb-3">
+                                        <label for="isaktif" class="form-label">Status <span style="color: red">*</span></label>
+                                        <select name="isaktif" id="isaktif" class="form-select @error('isaktif') is-invalid @enderror">
+                                            <option value="1" {{ old('isaktif', $user->isaktif) == 1 ? 'selected' : null }}>Aktif</option>
+                                            <option value="0" {{ old('isaktif', $user->isaktif) == 0 ? 'selected' : null }}>Non-Aktif</option>
+                                        </select>
+                                        @error('isaktif')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @else
+                                <div class="col-lg-6" id="handle-field" style="display: none">
+                                    <div class="mb-3">
+                                        <label for="handle" class="form-label">Technician Office Handles <span style="color: red">*</span></label>
+                                        <select name="handle_id[]" id="handles" class="form-control select2-multiple @error('handle_id') is-invalid @enderror" data-toggle="select2"
+                                        multiple="multiple" data-width="100%" data-placeholder="Please select">
+                                            @foreach ($office as $data)
+                                            <option {{ $user->officeHandles()->find($data->id) ? 'selected' : '' }} value="{{ $data->id }}" {{ old('handle_id') == $data->id ? 'selected' : null }}>{{ $data->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('handle_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="mb-3">
+                                        <label for="isaktif" class="form-label">Status <span style="color: red">*</span></label>
+                                        <select name="isaktif" id="isaktif" class="form-select @error('isaktif') is-invalid @enderror">
+                                            <option value="1" {{ old('isaktif', $user->isaktif) == 1 ? 'selected' : null }}>Aktif</option>
+                                            <option value="0" {{ old('isaktif', $user->isaktif) == 0 ? 'selected' : null }}>Non-Aktif</option>
+                                        </select>
+                                        @error('isaktif')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            @endif      
                         </div>
             
                         <div class="text-end">
@@ -129,7 +174,16 @@
 
 @push('pages-js')
 <!--Notification-->
-<script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        //Show and hide field technician office handles
+        $('#role-field select[name="role"]').change(function () {
+            $('#handle-field').toggle(500);
+            $('#handles').val('').change();
+        });
+    })
+
     @if (session('error')) {
         Swal.fire({
             title: `INFO`,
