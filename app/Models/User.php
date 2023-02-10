@@ -66,4 +66,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(TicketProgres::class);
     }
+
+    // public function technicianOfficeHandles()
+    // {
+    //     return $this->hasMany(TechnicianOfficeHandle::class, 'user_id', 'id');
+    // }
+
+    public function officeHandles()
+    {
+        return $this->belongsToMany(
+            Office::class,
+            'technician_office_handles',
+            'user_id',
+            'office_id'
+        );
+    }
 }

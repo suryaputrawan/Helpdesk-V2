@@ -20,4 +20,19 @@ class Office extends Model
     {
         return $this->hasMany(Location::class);
     }
+
+    // public function technicianOfficeHandles()
+    // {
+    //     return $this->hasMany(TechnicianOfficeHandle::class, 'office_id', 'id');
+    // }
+
+    public function officeHandles()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'technician_office_handles',
+            'office_id',
+            'user_id'
+        );
+    }
 }
