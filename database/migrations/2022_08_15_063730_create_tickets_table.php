@@ -22,6 +22,8 @@ class CreateTicketsTable extends Migration
                 ->onDelete('cascade');
             $table->foreignId('department_id');
             $table->foreignId('location_id');
+            $table->foreignId('office_id')->constrained('offices')
+                ->onDelete('cascade');
             $table->foreignId('status_id')->constrained('status')
                 ->onDelete('cascade');
             $table->text('detail_trouble');
