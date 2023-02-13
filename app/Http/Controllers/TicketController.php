@@ -149,7 +149,7 @@ class TicketController extends Controller
                         return $data->userRequester->name;
                     })
                     ->addColumn('office', function ($data) {
-                        return $data->userRequester->office->name;
+                        return $data->office->name;
                     })
                     ->addColumn('status', function ($data) {
                         if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
@@ -248,7 +248,7 @@ class TicketController extends Controller
                         return $data->userRequester->name;
                     })
                     ->addColumn('office', function ($data) {
-                        return $data->userRequester->office->name;
+                        return $data->office->name;
                     })
                     ->addColumn('status', function ($data) {
                         if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
@@ -724,7 +724,7 @@ class TicketController extends Controller
                     return $data->userRequester->name;
                 })
                 ->addColumn('office', function ($data) {
-                    return $data->userRequester->office->name;
+                    return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status->name == 'Solved') {
@@ -778,7 +778,7 @@ class TicketController extends Controller
                     return $data->userRequester->name;
                 })
                 ->addColumn('office', function ($data) {
-                    return $data->userRequester->office->name;
+                    return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status->name == 'Solved') {
@@ -837,7 +837,7 @@ class TicketController extends Controller
                     return $data->userRequester->name;
                 })
                 ->addColumn('office', function ($data) {
-                    return $data->userRequester->office->name;
+                    return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
                     if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {

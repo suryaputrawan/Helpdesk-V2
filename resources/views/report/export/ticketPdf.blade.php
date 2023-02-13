@@ -81,7 +81,7 @@
                         <td>{{ $data->category->name }}</td>
                         <td>{{ $data->userRequester->name }}</td>
                         <td>{{ $data->location->name }}</td>
-                        <td>{{ $data->userRequester->office->name }}</td>
+                        <td>{{ $data->office->name }}</td>
                         <td>{{ $data->userTechnician ? $data->userTechnician->name : '' }}</td>
                         <td>{{ $data->assign_date ? $assign_date : '' }}</td>
                         <td>{{ $data->solved_date ? $solved_date : '' }}</td>

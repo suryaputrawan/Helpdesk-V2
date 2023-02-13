@@ -42,8 +42,8 @@
                         <td>{{ $ticket->created_at->format("d M Y") }}</td>
                         </tr>
                         <tr>
-                        <th>Unit</th>
-                        <td>{{ $ticket->userRequester->office->name }}</td>
+                        <th>Office</th>
+                        <td>{{ $ticket->office->name }}</td>
                         <th>Date Solved</th>
                         @if ($resolution->status->name == 'Solved')
                         <?php

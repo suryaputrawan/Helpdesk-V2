@@ -21,10 +21,10 @@ class Office extends Model
         return $this->hasMany(Location::class);
     }
 
-    // public function technicianOfficeHandles()
-    // {
-    //     return $this->hasMany(TechnicianOfficeHandle::class, 'office_id', 'id');
-    // }
+    public function office()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 
     public function officeHandles()
     {

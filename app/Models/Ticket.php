@@ -18,6 +18,11 @@ class Ticket extends Model
 
     protected $with = ['category', 'location'];
 
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
+    }
+
     public function status()
     {
         return $this->belongsTo(Status::class);

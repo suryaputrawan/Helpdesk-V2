@@ -47,7 +47,7 @@
                         </div>
                         <div class="col-lg-5">
                             <h5 class="font-600 m-b-5">Office</h5>
-                            <p> {{ $ticket->userRequester->office->name }}
+                            <p> {{ $ticket->office->name }}
                         </div>
                     </div>
 
