@@ -39,9 +39,16 @@ Route::post('postregister', [AuthController::class, 'postregister'])->name('post
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    //User Route
+    Route::post('user/import', [UserController::class, 'import'])->name('user.import');
     Route::resource('user', UserController::class);
+
+    //Category Route
     Route::resource('category', CategoryController::class);
+    //Department Route
     Route::resource('department', DepartmentController::class);
+    //Status Route
     Route::resource('status', StatusController::class);
 
     //Ticket route
@@ -52,17 +59,21 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('ticket/closed/{ticket}', [TicketController::class, 'closed'])->name('ticket.closed');
     Route::put('ticket/assign/{ticket}', [TicketController::class, 'assign'])->name('ticket.assign');
 
+    //Office Route
     Route::resource('office', OfficeController::class);
+    //Location Route
     Route::resource('location', LocationController::class);
+    //Item Route
     Route::resource('item', ItemController::class);
 
+    //Profile User Route
     Route::group(['prefix' => 'profile'], function () {
         Route::get('user', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('user/{user}', [ProfileController::class, 'update'])->name('profile.update');
-
         Route::put('user/password/update', [ProfileController::class, 'updatePassword'])->name('password.update');
     });
 
+    //Report Route
     Route::group(['prefix' => 'reports'], function () {
         Route::get('tickets', [ReportController::class, 'index'])->name('report.index');
         Route::get('tickets/exportPdf', [ReportController::class, 'exportPdf'])->name('report.ticket.exportPdf');

@@ -6,11 +6,20 @@
 
 @section('content')
     <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-6">
+                    <a href="{{ route('user.create') }}" class="btn btn-soft-primary waves-effect waves-light">Add Data</a>
+                </div>
+                <div class="col-6 text-end">
+                    <button class="btn btn-sm btn-success btn-icon-text" type="button" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fe-upload"></i>
+                        Import
+                    </button>
+                </div>
+            </div> 
+        </div>
         <div class="card-body">
-            <div class="col-xl-12">
-                <a href="{{ route('user.create') }}" class="btn btn-soft-primary waves-effect waves-light">Add Data</a>
-            </div>
-
             <div class="mt-3">
                 <table id="datatable" class="table table-bordered dt-responsive table-responsive" width="100%" cellspacing="0">
                     <thead>
@@ -27,6 +36,34 @@
                     </tr>
                     </thead>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Data Users</h5>
+                </div>
+                <form action="{{ route('user.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Upload File (.xls / .xlsx)</label>
+                                    <input type="file" name="file" id="file-import" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success" id="btn-import">Import</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

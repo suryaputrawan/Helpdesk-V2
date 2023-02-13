@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UsersImport;
 use App\Models\User;
 use App\Models\Office;
 use App\Models\Department;
@@ -233,5 +234,33 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file'  => 'required|mimes:csv,xlx,xls,xlsx'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $file = $request->file('file');
+
+            $import = new UsersImport;
+            $import->import($file);
+
+            DB::commit();
+            return back()->with('success', 'Import data berhasil dilakukan');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', "Error on line {$e->getLine()}: {$e->getMessage()}");
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', "Error on line {$e->getLine()}: {$e->getMessage()}");
+        }
     }
 }
