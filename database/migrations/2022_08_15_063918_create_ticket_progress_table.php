@@ -18,7 +18,7 @@ class CreateTicketProgressTable extends Migration
             $table->foreignId('ticket_id');
             $table->dateTime('date');
             $table->text('description');
-            $table->foreignId('status_id');
+            $table->enum('status', ['New Request', 'In Progress', 'Hold', 'Solved', 'Closed']);
             $table->foreignId('user_id');
             $table->timestamps();
         });

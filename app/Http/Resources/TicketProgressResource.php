@@ -19,7 +19,7 @@ class TicketProgressResource extends JsonResource
             'ticket_id' => $this->ticket_id,
             'date' => $this->date,
             'description' => $this->description,
-            'status' => $this->status->name,
+            'status' => $this->status,
             'technician' => $this->user->name
         ];
     }

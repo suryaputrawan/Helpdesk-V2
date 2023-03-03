@@ -22,10 +22,10 @@
                         <div class="flex-grow-2">
                             <h3 class="media-heading mt-0">{{ $ticket->userRequester->name }}</h3>
                             <h4>
-                                @if ($ticket->status->name == "Solved" || $ticket->status->name == 'Closed')
-                                    <span class="badge bg-danger">Status : {{ $ticket->status->name }}</span>
+                                @if ($ticket->status == "Solved" || $ticket->status == 'Closed')
+                                    <span class="badge bg-danger">Status : {{ $ticket->status }}</span>
                                 @else
-                                    <span class="badge bg-secondary">Status : {{ $ticket->status->name }}</span>
+                                    <span class="badge bg-secondary">Status : {{ $ticket->status }}</span>
                                 @endif
                                 <span class="badge bg-primary">Category : {{ $ticket->category->name }}</span>
                             </h4>
@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-lg-5">
                             <h5 class="font-600 m-b-5">Solved Date</h5>
-                            @if ($resolution->status->name == "Solved")
+                            @if ($resolution->status == "Solved")
                             <?php
                                 $dateTime = strtotime($resolution->date);
                                 $date = date('d M Y', $dateTime);
@@ -76,15 +76,15 @@
                             ?>
                                 <p style="color: red"> {{ $date }} - {{ $time }}
                             @else
-                                <p> {{ $ticket->status->name }}
+                                <p> {{ $ticket->status }}
                             @endif
                         </div>
                         <div class="col-lg-5">
                             <h5 class="font-600 m-b-5">Work Duration</h5>
-                            @if ($resolution->status->name == "Solved")
+                            @if ($resolution->status == "Solved")
                                 <p style="color: red"> {{ $ticketTime }}
                             @else
-                                <p> {{ $ticket->status->name }}
+                                <p> {{ $ticket->status }}
                             @endif
                         </div>
                     </div>
@@ -142,10 +142,10 @@
                                     <p class="font-13 mb-1">
                                         {{ $data->description }}
                                     </p>
-                                    @if ($data->status->name == 'Solved' || $data->status->name == 'Closed')
-                                        <span class="badge bg-danger">{{ $data->status->name }}</span>
+                                    @if ($data->status == 'Solved' || $data->status == 'Closed')
+                                        <span class="badge bg-danger">{{ $data->status }}</span>
                                     @else
-                                        <span class="badge bg-primary">{{ $data->status->name }}</span>
+                                        <span class="badge bg-primary">{{ $data->status }}</span>
                                     @endif 
                                 </div>
                             </div>
@@ -160,10 +160,10 @@
                                     <p class="font-13 mb-1">
                                         {{ $data->description }}
                                     </p>
-                                    @if ($data->status->name == 'Solved' || $data->status->name == 'Closed')
-                                        <span class="badge bg-danger">{{ $data->status->name }}</span>
+                                    @if ($data->status == 'Solved' || $data->status == 'Closed')
+                                        <span class="badge bg-danger">{{ $data->status }}</span>
                                     @else
-                                        <span class="badge bg-primary">{{ $data->status->name }}</span>
+                                        <span class="badge bg-primary">{{ $data->status }}</span>
                                     @endif 
                                 </div>
                             </div>

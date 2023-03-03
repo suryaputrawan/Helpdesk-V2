@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Status;
+// use App\Models\Status;
 use App\Models\Ticket;
 use App\Mail\TicketMail;
 use App\Models\Category;
@@ -51,7 +51,7 @@ class TicketController extends Controller
                         $dataTitle       = $data->title;
 
                         $action = "";
-                        if ($data->status->name == 'Solved') {
+                        if ($data->status == "Solved") {
                             $action .= '
                             <a type="button" class="btn btn-soft-danger waves-effect waves-light me-1 closed-btn" 
                                 data-label="' . $dataLabel . '"
@@ -78,10 +78,10 @@ class TicketController extends Controller
                         return $data->category->name;
                     })
                     ->addColumn('status', function ($data) {
-                        if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
-                            return '<span style="color:red">' . $data->status->name . '</span>';
+                        if ($data->status == "Solved" || $data->status == "Closed") {
+                            return '<span style="color:red">' . $data->status . '</span>';
                         }
-                        return '<span style="color:blue">' . $data->status->name . '</span>';
+                        return '<span style="color:blue">' . $data->status . '</span>';
                     })
                     ->addColumn('technician', function ($data) {
                         return $data->userTechnician != null ? $data->userTechnician->name : "";
@@ -97,12 +97,12 @@ class TicketController extends Controller
                 ->whereIn('office_id', $officeHandles)
                 ->get()->count();
             $tProgress = Ticket::where('technician_id', $user)
-                ->where('status_id', '=', 2)
+                ->where('status', '=', "In Progress")
                 ->where('assign', '=', 1)
                 ->whereIn('office_id', $officeHandles)
                 ->get()->count();
             $tHold = Ticket::where('technician_id', $user)
-                ->where('status_id', '=', 3)
+                ->where('status', '=', "Hold")
                 ->where('assign', '=', 1)
                 ->whereIn('office_id', $officeHandles)
                 ->get()->count();
@@ -110,8 +110,8 @@ class TicketController extends Controller
                 ->where('assign', '=', 1)
                 ->where('solved_date', '!=', null)
                 ->orWhere(function ($query) {
-                    $query->where('status_id', '=', 4)
-                        ->where('status_id', '=', 5);
+                    $query->where('status', '=', "Solved")
+                        ->where('status', '=', "Closed");
                 })
                 ->whereIn('office_id', $officeHandles)
                 ->get()->count();
@@ -152,10 +152,10 @@ class TicketController extends Controller
                         return $data->office->name;
                     })
                     ->addColumn('status', function ($data) {
-                        if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
-                            return '<span style="color:red">' . $data->status->name . '</span>';
+                        if ($data->status == 'Solved' || $data->status == 'Closed') {
+                            return '<span style="color:red">' . $data->status . '</span>';
                         }
-                        return '<span style="color:blue">' . $data->status->name . '</span>';
+                        return '<span style="color:blue">' . $data->status . '</span>';
                     })
                     ->addColumn('technician', function ($data) {
                         return $data->userTechnician != null ? $data->userTechnician->name : "";
@@ -178,7 +178,7 @@ class TicketController extends Controller
                         $dataTitle      = $data->title;
 
                         $action = "";
-                        if ($data->status->name == 'Solved') {
+                        if ($data->status == 'Solved') {
                             $action .= '
                             <a type="button" class="btn btn-soft-danger waves-effect waves-light me-1 closed-btn" 
                                 data-label="' . $dataLabel . '"
@@ -205,10 +205,10 @@ class TicketController extends Controller
                         return $data->category->name;
                     })
                     ->addColumn('status', function ($data) {
-                        if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
-                            return '<span style="color:red">' . $data->status->name . '</span>';
+                        if ($data->status == 'Solved' || $data->status == 'Closed') {
+                            return '<span style="color:red">' . $data->status . '</span>';
                         }
-                        return '<span style="color:blue">' . $data->status->name . '</span>';
+                        return '<span style="color:blue">' . $data->status . '</span>';
                     })
                     ->addColumn('technician', function ($data) {
                         return $data->userTechnician != null ? $data->userTechnician->name : "";
@@ -251,10 +251,10 @@ class TicketController extends Controller
                         return $data->office->name;
                     })
                     ->addColumn('status', function ($data) {
-                        if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
-                            return '<span style="color:red">' . $data->status->name . '</span>';
+                        if ($data->status == 'Solved' || $data->status == 'Closed') {
+                            return '<span style="color:red">' . $data->status . '</span>';
                         }
-                        return '<span style="color:blue">' . $data->status->name . '</span>';
+                        return '<span style="color:blue">' . $data->status . '</span>';
                     })
                     ->addColumn('technician', function ($data) {
                         return $data->userTechnician != null ? $data->userTechnician->name : "";
@@ -325,7 +325,7 @@ class TicketController extends Controller
                 'department_id'     => $department->department_id,
                 'location_id'       => $request->location_id,
                 'office_id'         => auth()->user()->office_id,
-                'status_id'         => 1,
+                'status'            => 'New Request',
                 'detail_trouble'    => $request->detail_trouble,
                 'requester_id'      => $requester,
             ]);
@@ -333,11 +333,11 @@ class TicketController extends Controller
 
             //Create progress on ticket_progress
             TicketProgres::create([
-                'ticket_id' => $autoNo,
-                'date' => $date,
-                'description' => 'Ticket success to created',
-                'status_id' => 1,
-                'user_id' => auth()->user()->id,
+                'ticket_id'     => $autoNo,
+                'date'          => $date,
+                'description'   => 'Ticket success to created',
+                'status'        => 'New Request',
+                'user_id'       => auth()->user()->id,
             ]);
             //End Create ticket progress
 
@@ -390,7 +390,7 @@ class TicketController extends Controller
 
             $progress = TicketProgres::where('ticket_id', $ticket->id)->get();
             $resolution = TicketProgres::where('ticket_id', $ticket->id)
-                ->where('status_id', '!=', 5)->latest()->first();
+                ->where('status', '!=', 'Closed')->latest()->first();
 
             //Mencari interval waktu
             $assignDate = new DateTime($ticket->assign_date);
@@ -439,17 +439,14 @@ class TicketController extends Controller
             $decrypt = Crypt::decryptString($id);
             $ticket = Ticket::find($decrypt);
 
-            $status = Status::where('name', '!=', 'New Request')
-                ->where('name', '!=', 'Closed')->get();
             $progress = TicketProgres::where('ticket_id', $ticket->id)->get();
             $resolution = TicketProgres::where('ticket_id', $ticket->id)
-                ->where('status_id', '!=', 5)->latest()->first();
+                ->where('status', '!=', 'Closed')->latest()->first();
 
             $items = Item::get();
 
             return view('ticket.technician.update', [
                 'ticket'    => $ticket,
-                'status'    => $status,
                 'progress'  => $progress,
                 'items'     => $items,
                 'resolution' => $resolution
@@ -476,25 +473,25 @@ class TicketController extends Controller
             $date = Carbon::now('Asia/Singapore');
 
             //Pengecekan jika status update adalah solved maka tambahkan tanggal solved
-            if ($request->status_id == 4) {
+            if ($request->status == 'Solved') {
                 $ticket->update([
-                    'status_id'     => $request->status_id,
+                    'status'        => $request->status,
                     'solved_date'   => $date
                 ]);
             }
 
             //Update tbTickets
             $ticket->update([
-                'status_id' => $request->status_id,
+                'status' => $request->status,
             ]);
 
             //Store progress on ticket_progress
             TicketProgres::create([
-                'ticket_id' => $ticket->id,
-                'date' => $date,
-                'description' => $request->description,
-                'status_id' => $request->status_id,
-                'user_id' => auth()->user()->id,
+                'ticket_id'     => $ticket->id,
+                'date'          => $date,
+                'description'   => $request->description,
+                'status'        => $request->status,
+                'user_id'       => auth()->user()->id,
             ]);
 
             $ticketUpdate = TicketProgres::where('ticket_id', $ticket->id)->orderBy('id', 'desc')->first();
@@ -578,17 +575,17 @@ class TicketController extends Controller
                 'assign'        => 1,
                 'assign_date'   => $date,
                 'technician_id' => $technician,
-                'status_id'     => 2
+                'status'        => 'In Progress'
             ]);
             //End update ticket
 
             //Create progress on ticket_progress
             TicketProgres::create([
-                'ticket_id' => $data->id,
-                'date' => $date,
-                'description' => 'Technician has assign your ticket',
-                'status_id' => 2,
-                'user_id' => $technician,
+                'ticket_id'     => $data->id,
+                'date'          => $date,
+                'description'   => 'Technician has assign your ticket',
+                'status'        => 'In Progress',
+                'user_id'       => $technician,
             ]);
             //End Create ticket progress
 
@@ -642,17 +639,17 @@ class TicketController extends Controller
 
             //Update ticket
             $data->update([
-                'status_id'     => 5
+                'status'     => 'Closed'
             ]);
             //End update ticket
 
             //Create progress on ticket_progress
             TicketProgres::create([
-                'ticket_id' => $data->id,
-                'date' => $date,
-                'description' => 'Ticket has been closed by requester',
-                'status_id' => 5,
-                'user_id' => $user->id,
+                'ticket_id'     => $data->id,
+                'date'          => $date,
+                'description'   => 'Ticket has been closed by requester',
+                'status'        => 'Closed',
+                'user_id'       => $user->id,
             ]);
             //End Create ticket progress
 
@@ -687,7 +684,7 @@ class TicketController extends Controller
         if (request()->type == 'datatable') {
             $user = auth()->user()->id;
             $data = Ticket::where('technician_id', $user)
-                ->where('status_id', '=', 2)
+                ->where('status', '=', 'In Progress')
                 ->where('assign', '=', 1)->get();
 
             return datatables()->of($data)
@@ -698,7 +695,7 @@ class TicketController extends Controller
 
                     $action = "";
 
-                    if ($data->status->name != 'Solved') {
+                    if ($data->status != 'Solved') {
                         $action .= '
                             <a class="btn btn-soft-warning waves-effect waves-light me-1" id="btn-edit" type="button" href="' . route($updateRoute, $dataId) . '">
                                 Update
@@ -727,10 +724,10 @@ class TicketController extends Controller
                     return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
-                    if ($data->status->name == 'Solved') {
-                        return '<span style="color:red">' . $data->status->name . '</span>';
+                    if ($data->status == 'Solved') {
+                        return '<span style="color:red">' . $data->status . '</span>';
                     }
-                    return '<span style="color:blue">' . $data->status->name . '</span>';
+                    return '<span style="color:blue">' . $data->status . '</span>';
                 })
                 ->rawColumns(['action', 'category', 'status', 'requester', 'office'])
                 ->make(true);
@@ -749,7 +746,7 @@ class TicketController extends Controller
         if (request()->type == 'datatable') {
             $user = auth()->user()->id;
             $data = Ticket::where('technician_id', $user)
-                ->where('status_id', '=', 3)
+                ->where('status', '=', 'Hold')
                 ->where('assign', '=', 1)->get();
 
             return datatables()->of($data)
@@ -781,10 +778,10 @@ class TicketController extends Controller
                     return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
-                    if ($data->status->name == 'Solved') {
-                        return '<span style="color:red">' . $data->status->name . '</span>';
+                    if ($data->status == 'Solved') {
+                        return '<span style="color:red">' . $data->status . '</span>';
                     }
-                    return '<span style="color:blue">' . $data->status->name . '</span>';
+                    return '<span style="color:blue">' . $data->status . '</span>';
                 })
                 ->rawColumns(['action', 'category', 'status', 'requester', 'office'])
                 ->make(true);
@@ -806,8 +803,8 @@ class TicketController extends Controller
                 ->where('assign', '=', 1)
                 ->where('solved_date', '!=', null)
                 ->orWhere(function ($query) {
-                    $query->where('status_id', '=', 4)
-                        ->where('status_id', '=', 5);
+                    $query->where('status', '=', 'Solved')
+                        ->where('status', '=', 'Closed');
                 })
                 ->get();
 
@@ -840,10 +837,10 @@ class TicketController extends Controller
                     return $data->office->name;
                 })
                 ->addColumn('status', function ($data) {
-                    if ($data->status->name == 'Solved' || $data->status->name == 'Closed') {
-                        return '<span style="color:red">' . $data->status->name . '</span>';
+                    if ($data->status == 'Solved' || $data->status == 'Closed') {
+                        return '<span style="color:red">' . $data->status . '</span>';
                     }
-                    return '<span style="color:blue">' . $data->status->name . '</span>';
+                    return '<span style="color:blue">' . $data->status . '</span>';
                 })
                 ->rawColumns(['action', 'category', 'status', 'requester', 'office'])
                 ->make(true);

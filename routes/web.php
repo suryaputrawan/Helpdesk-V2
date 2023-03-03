@@ -25,10 +25,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('dashboard.index');
-// });
-
 Route::get('/', [AuthController::class, 'showloginform'])->name('login');
 Route::post('postlogin', [AuthController::class, 'postlogin'])->name('postlogin');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
@@ -48,8 +44,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('category', CategoryController::class);
     //Department Route
     Route::resource('department', DepartmentController::class);
-    //Status Route
-    Route::resource('status', StatusController::class);
 
     //Ticket route
     Route::get('ticket/progress', [TicketController::class, 'progress'])->name('ticket.progress');

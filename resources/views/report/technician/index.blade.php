@@ -63,10 +63,10 @@
                             <div class="mb-2">
                                 <label class="form-label">Status Ticket</label>
                                 <select name="status_filter" id="status-filter" class="js-example-basic-single form-control" data-width="100%" data-toggle="select2">
-                                    <option selected disabled>All Status</option>
-                                    @foreach ($status as $data)
-                                    <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                    @endforeach
+                                    <option value="" selected disabled>All Status</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Hold">Hold</option>
+                                    <option value="Solved">Solved</option>
                                 </select>
                             </div>
                         </div>
@@ -160,10 +160,10 @@
                     <div class="mb-2">
                         <label class="form-label">Status Ticket</label>
                         <select name="status_export" id="status-export" class="js-example-basic-single form-select" data-width="100%">
-                            <option selected disabled>All Status</option>
-                            @foreach ($status as $data)
-                            <option value="{{ $data->id }}">{{ $data->name }}</option>
-                            @endforeach
+                            <option value="" selected disabled>All Status</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Hold">Hold</option>
+                            <option value="Solved">Solved</option>
                         </select>
                     </div>
                 </div>
@@ -191,9 +191,10 @@
                 data: function(d) {
                     d.office_id = Number($('select[name=office_filter] option:selected').val())
                     d.category_id = Number($('select[name=category_filter] option:selected').val())
-                    d.status_id = Number($('select[name=status_filter] option:selected').val())
+                    d.status_filter = $('select[name=status_filter] option:selected').val()
                     d.start_date = $('input[name=start_date_filter]').val()
                     d.end_date = $('input[name=end_date_filter]').val()
+                    console.log(d);
                 }
             },
             processing: true,
@@ -232,7 +233,7 @@
         $('#btn-export-pdf').on('click', function() {
             var office = Number($('select[name=office_export] option:selected').val());
             var category = Number($('select[name=category_export] option:selected').val());
-            var status = Number($('select[name=status_export] option:selected').val());
+            var status = $('select[name=status_export] option:selected').val();
             var start_date = $('input[name=start_date_export]').val();
             var end_date = $('input[name=end_date_export]').val();
             var url = `{{ route('report.ticket.exportPdf') }}?start_date=${start_date}&end_date=${end_date}&office=${office}&category=${category}&status=${status}`;

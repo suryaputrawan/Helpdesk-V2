@@ -89,7 +89,7 @@
                         @foreach ($data->ticketProgress as $progress)
                             <td>{{ $progress->description }}</td>
                         @endforeach
-                        <td>{{ $data->status ? $data->status->name : '' }}</td>
+                        <td>{{ $data->status ? $data->status : '' }}</td>
                     </tr>
                 @endforeach
             </tbody>

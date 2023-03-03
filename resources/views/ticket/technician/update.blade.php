@@ -22,10 +22,10 @@
                         <th>Requester</th>
                         <td>{{ $ticket->userRequester->name }}</td>
                         <th>Ticket Status</th>
-                        @if ($ticket->status->name == 'Solved')
-                            <td style="color: red">{{ $ticket->status->name }}</td>
+                        @if ($ticket->status == 'Solved')
+                            <td style="color: red">{{ $ticket->status }}</td>
                         @else
-                            <td style="color: blue">{{ $ticket->status->name }}</td>
+                            <td style="color: blue">{{ $ticket->status }}</td>
                         @endif
                         
                     </tr>
@@ -45,7 +45,7 @@
                         <th>Office</th>
                         <td>{{ $ticket->office->name }}</td>
                         <th>Date Solved</th>
-                        @if ($resolution->status->name == 'Solved')
+                        @if ($resolution->status == 'Solved')
                         <?php
                             $dateTime = strtotime($resolution->date);
                             $date = date('d M Y', $dateTime);
@@ -94,7 +94,7 @@
         
         <div class="card">
             <div class="card-body">
-                @if (auth()->user()->role == 'Technician' && $ticket->status->name != 'Solved')
+                @if (auth()->user()->role == 'Technician' && $ticket->status != 'Solved')
                     <div class="mt-4">
                         <h4 class="header-title">Update Progress Ticket</h4>
                         <p class="sub-header">Isikan dengan lengkap data berikut</p>
@@ -103,7 +103,7 @@
                             @csrf
                             @method('patch')
 
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col-lg-3">
                                     <div class="mb-3">
                                         <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
@@ -117,11 +117,11 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="row">
                                 <div class="col-lg-8">                     
-                                        <label for="status" class="form-label">Items <span class="text-danger">(Tambahkan item yang dilakukan penggantian atau perbaikan, jika ada!)</span></label>
+                                        <label for="item" class="form-label">Items <span class="text-danger">(Tambahkan item yang dilakukan penggantian atau perbaikan, jika ada!)</span></label>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="text-end mb-1">
@@ -169,6 +169,17 @@
                                             @endif
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-2">
+                                <div class="mb-3">
+                                    <label class="form-label">Status Progress <span class="text-danger">*</span></label>
+                                    <select name="status" id="status" class="js-example-basic-single form-control" data-width="100%" data-toggle="select2">
+                                        <option value="In Progress">In Progress</option>
+                                        <option value="Hold">Hold</option>
+                                        <option value="Solved">Solved</option>
+                                    </select>
                                 </div>
                             </div>
 

@@ -11,7 +11,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'nomor', 'date', 'title', 'category_id', 'department_id',
-        'location_id', 'office_id', 'status_id', 'detail_trouble',
+        'location_id', 'office_id', 'status', 'detail_trouble',
         'requester_id', 'technician_id', 'assign', 'assign_date',
         'solved_date'
     ];
@@ -23,10 +23,10 @@ class Ticket extends Model
         return $this->belongsTo(Office::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
+    // public function status()
+    // {
+    //     return $this->belongsTo(Status::class);
+    // }
 
     public function userRequester()
     {
@@ -46,7 +46,7 @@ class Ticket extends Model
     public function ticketProgress()
     {
         return $this->hasMany(TicketProgres::class, 'ticket_id', 'id')
-            ->where('status_id', '=', 4);
+            ->where('status', '=', 'Solved');
     }
 
     public function location()

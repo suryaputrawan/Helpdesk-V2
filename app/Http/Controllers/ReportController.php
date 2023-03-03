@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Models\Office;
 use App\Models\Ticket;
 use App\Models\Category;
-use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -22,9 +21,6 @@ class ReportController extends Controller
 
                 $data = Ticket::where('technician_id', '=', $technician)
                     ->with([
-                        'status' => function ($query) {
-                            $query->select('id', 'name');
-                        },
                         'userRequester' => function ($query) {
                             $query->select('id', 'name', 'office_id');
                         },
@@ -46,8 +42,8 @@ class ReportController extends Controller
                     ->when(request('category_id') != null && request('category_id') != 'NaN', function ($query) {
                         return $query->where('category_id', '=', request('category_id'));
                     })
-                    ->when(request('status_id') != null && request('status_id') != 'NaN', function ($query) {
-                        return $query->where('status_id', '=', request('status_id'));
+                    ->when(request('status_filter') != null && request('status_filter') != 'NaN', function ($query) {
+                        return $query->where('status', '=', request('status_filter'));
                     })
                     ->select(
                         'id',
@@ -57,7 +53,7 @@ class ReportController extends Controller
                         'category_id',
                         'location_id',
                         'office_id',
-                        'status_id',
+                        'status',
                         'requester_id',
                         'technician_id',
                         'assign_date',
@@ -84,7 +80,7 @@ class ReportController extends Controller
                         return $data->location ? $data->location->name : '';
                     })
                     ->addColumn('status', function ($data) {
-                        return $data->status ? $data->status->name : '';
+                        return $data->status ? $data->status : '';
                     })
                     ->addColumn('requester', function ($data) {
                         return $data->userRequester ? $data->userRequester->name : '';
@@ -122,16 +118,12 @@ class ReportController extends Controller
             }
             return view('report.technician.index', [
                 'office'        => Office::get(['id', 'name']),
-                'status'        => Status::get(['id', 'name']),
                 'category'      => Category::where('department_id', '=', auth()->user()->department_id)->get()
             ]);
         } elseif (auth()->user()->role == "Management") {
             if (request()->type == 'datatable') {
                 $data = Ticket::where('office_id', auth()->user()->office_id)->latest()
                     ->with([
-                        'status' => function ($query) {
-                            $query->select('id', 'name');
-                        },
                         'userRequester' => function ($query) {
                             $query->select('id', 'name', 'office_id');
                         },
@@ -164,7 +156,7 @@ class ReportController extends Controller
                         'category_id',
                         'location_id',
                         'office_id',
-                        'status_id',
+                        'status',
                         'requester_id',
                         'technician_id',
                         'assign_date',
@@ -191,7 +183,7 @@ class ReportController extends Controller
                         return $data->location ? $data->location->name : '';
                     })
                     ->addColumn('status', function ($data) {
-                        return $data->status ? $data->status->name : '';
+                        return $data->status ? $data->status : '';
                     })
                     ->addColumn('requester', function ($data) {
                         return $data->userRequester ? $data->userRequester->name : '';
@@ -248,9 +240,6 @@ class ReportController extends Controller
             if (request()->type == 'datatable') {
                 $data = Ticket::latest()
                     ->with([
-                        'status' => function ($query) {
-                            $query->select('id', 'name');
-                        },
                         'userRequester' => function ($query) {
                             $query->select('id', 'name', 'office_id');
                         },
@@ -283,7 +272,7 @@ class ReportController extends Controller
                         'category_id',
                         'location_id',
                         'office_id',
-                        'status_id',
+                        'status',
                         'requester_id',
                         'technician_id',
                         'assign_date',
@@ -310,7 +299,7 @@ class ReportController extends Controller
                         return $data->location ? $data->location->name : '';
                     })
                     ->addColumn('status', function ($data) {
-                        return $data->status ? $data->status->name : '';
+                        return $data->status ? $data->status : '';
                     })
                     ->addColumn('requester', function ($data) {
                         return $data->userRequester ? $data->userRequester->name : '';
@@ -372,9 +361,6 @@ class ReportController extends Controller
             $technician = auth()->user()->id;
             $tickets = Ticket::where('technician_id', $technician)
                 ->with([
-                    'status' => function ($query) {
-                        $query->select('id', 'name');
-                    },
                     'userRequester' => function ($query) {
                         $query->select('id', 'name', 'office_id');
                     },
@@ -401,7 +387,7 @@ class ReportController extends Controller
                     return $query->where('category_id', '=', request('category'));
                 })
                 ->when(request('status') != null && request('status') != 'NaN', function ($query) {
-                    return $query->where('status_id', '=', request('status'));
+                    return $query->where('status', '=', request('status'));
                 })
                 ->select(
                     'id',
@@ -411,7 +397,7 @@ class ReportController extends Controller
                     'category_id',
                     'location_id',
                     'office_id',
-                    'status_id',
+                    'status',
                     'requester_id',
                     'technician_id',
                     'assign_date',
@@ -420,9 +406,6 @@ class ReportController extends Controller
         } elseif (auth()->user()->role == "Management") {
             $tickets = Ticket::where('office_id', auth()->user()->office_id)->latest()
                 ->with([
-                    'status' => function ($query) {
-                        $query->select('id', 'name');
-                    },
                     'userRequester' => function ($query) {
                         $query->select('id', 'name', 'office_id');
                     },
@@ -459,7 +442,7 @@ class ReportController extends Controller
                     'category_id',
                     'location_id',
                     'office_id',
-                    'status_id',
+                    'status',
                     'requester_id',
                     'technician_id',
                     'assign_date',
@@ -468,9 +451,6 @@ class ReportController extends Controller
         } else {
             $tickets = Ticket::latest()
                 ->with([
-                    'status' => function ($query) {
-                        $query->select('id', 'name');
-                    },
                     'userRequester' => function ($query) {
                         $query->select('id', 'name', 'office_id');
                     },
@@ -507,7 +487,7 @@ class ReportController extends Controller
                     'category_id',
                     'location_id',
                     'office_id',
-                    'status_id',
+                    'status',
                     'requester_id',
                     'technician_id',
                     'assign_date',

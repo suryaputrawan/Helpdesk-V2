@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DepartmentTableSeeder::class);
         $this->call(OfficesTableSeeder::class);
         $this->call(ParamNumbersTableSeeder::class);
-        $this->call(StatusTableSeeder::class);
+        // $this->call(StatusTableSeeder::class);
         $this->call(LocationTableSeeder::class);
     }
 }

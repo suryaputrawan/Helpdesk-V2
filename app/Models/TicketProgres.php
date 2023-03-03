@@ -11,17 +11,17 @@ class TicketProgres extends Model
 
     protected $table = 'ticket_progress';
 
-    protected $fillable = ['ticket_id', 'date', 'description', 'status_id', 'user_id'];
+    protected $fillable = ['ticket_id', 'date', 'description', 'status', 'user_id'];
 
     public function ticket()
     {
         return $this->belongsTo(Ticket::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
+    // public function status()
+    // {
+    //     return $this->belongsTo(Status::class);
+    // }
 
     public function user()
     {

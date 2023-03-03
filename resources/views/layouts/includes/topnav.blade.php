@@ -31,7 +31,6 @@
                                 <a href="{{ route('office.index') }}" class="dropdown-item">Offices</a>
                                 <a href="{{ route('department.index') }}" class="dropdown-item">Departments</a>
                                 <a href="{{ route('category.index') }}" class="dropdown-item">Categories</a>
-                                <a href="{{ route('status.index') }}" class="dropdown-item">Status</a>
                                 <a href="{{ route('location.index') }}" class="dropdown-item">Locations</a>
                                 <a href="{{ route('item.index') }}" class="dropdown-item">Items</a>
                                 <a href="{{ route('user.index') }}" class="dropdown-item">Users</a>

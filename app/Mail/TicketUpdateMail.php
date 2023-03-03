@@ -30,7 +30,7 @@ class TicketUpdateMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('[Update Request ID: ## ' . $this->ticketUpdate->ticket_id . ' ##] with status : ' . $this->ticketUpdate->status->name)
+        return $this->subject('[Update Request ID: ## ' . $this->ticketUpdate->ticket_id . ' ##] with status : ' . $this->ticketUpdate->status)
             ->view('ticket.emailUpdate');
     }
 }

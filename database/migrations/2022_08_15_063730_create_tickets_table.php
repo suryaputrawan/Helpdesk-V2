@@ -24,8 +24,7 @@ class CreateTicketsTable extends Migration
             $table->foreignId('location_id');
             $table->foreignId('office_id')->constrained('offices')
                 ->onDelete('cascade');
-            $table->foreignId('status_id')->constrained('status')
-                ->onDelete('cascade');
+            $table->enum('status', ['New Request', 'In Progress', 'Hold', 'Solved', 'Closed']);
             $table->text('detail_trouble');
             $table->foreignId('requester_id')->constrained('users')
                 ->onDelete('cascade');

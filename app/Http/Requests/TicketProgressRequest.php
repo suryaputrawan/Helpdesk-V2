@@ -24,7 +24,7 @@ class TicketProgressRequest extends FormRequest
     public function rules()
     {
         return [
-            'status_id'    => ['required'],
+            'status'       => ['required'],
             'description'  => ['required', 'min:10'],
             'item_id'      => ['array'],
             'item_id.*'    => ['required'],
