@@ -1,2 +1,2 @@
 # helpdesk-app-web
- App Helpdesk untuk TA INSTIKI
+ App Helpdesk ini dibuat dan dapat dipergunakan di lebih dari satu office.
